@@ -7,19 +7,16 @@
 <title>David Hackett · Proof of Work</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: warm off-white field kit. One display headline with an ochre word, then three numbered tool cards in sequence. */
+/* Layout: warm industrial editorial, light only. One display headline with an ochre word, then three numbered tool cards in sequence. */
 :root {
-  --paper: #f5f2ec; --sheet: #fcfbf8; --panel: #ece8df; --ink: #111111; --ink-soft: #5f5a52; --rule: #e1dcd2;
-  --accent: #c9853a; --on-ink: #fcfbf8;
-  --font-display: "Sora", "Avenir Next", system-ui, sans-serif;
+  --paper: #F4F1EA; --sheet: #FAF8F3; --panel: #ECE7DD; --ink: #111111; --ink-soft: #4A4A4A; --muted: #8A8578; --rule: #E2DDD2;
+  --accent: #D4914A; --on-ink: #FFFFFF;
+  --font-display: "Bai Jamjuree", "Saira", system-ui, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, Menlo, monospace;
   color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --paper: #151412; --sheet: #1d1b18; --panel: #24211d; --ink: #f3f0e9; --ink-soft: #a9a398; --rule: #35312b; --accent: #e2a35b; --on-ink: #151412; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
@@ -43,6 +40,18 @@ h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(42px, 
 .note p { margin: 0; color: var(--ink-soft); max-width: 70ch; }
 footer { font: 500 11px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); border-top: 1px solid var(--rule); padding-top: 16px; }
 a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* warm industrial editorial overrides */
+body { font-size: 18px; }
+h1 { font-weight: 600; font-size: clamp(56px, 12vw, 116px); line-height: 0.96; letter-spacing: -0.025em; }
+.eyebrow, .step, footer { color: var(--muted); }
+.eyebrow { letter-spacing: 0.2em; }
+.eyebrow::before { width: 6px; height: 6px; }
+.lede { font-size: 19px; }
+.card { border-radius: 24px; }
+.card h2 { font-size: 30px; }
+.tag { border-radius: 2px; }
+.note { border-radius: 32px; }
+.cards .card:first-child { box-shadow: 14px 14px 0 var(--accent); margin-right: 14px; }
 </style>
 </head>
 <body>
