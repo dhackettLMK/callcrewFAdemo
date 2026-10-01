@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en-IE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>html{color-scheme:light}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Missed-Call Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: warm off-white field kit. Big display headline with one ochre word, mono eyebrows, rounded cards, black controls. Sticky round picker, live tally, one card per business. */
+:root {
+  --paper: #f5f2ec;
+  --sheet: #fcfbf8;
+  --panel: #ece8df;
+  --ink: #111111;
+  --ink-soft: #5f5a52;
+  --rule: #e1dcd2;
+  --accent: #c9853a;
+  --accent-soft: #f4e5cf;
+  --on-ink: #fcfbf8;
+  --good: #2e7a4e; --good-soft: #e2f1e5;
+  --warn: #9c6410; --warn-soft: #f6ead2;
+  --bad: #b03a2e; --bad-soft: #f6e0dc;
+  --muted-soft: #e6e1d7;
+  --font-display: "Sora", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #151412; --sheet: #1d1b18; --panel: #24211d; --ink: #f3f0e9; --ink-soft: #a9a398; --rule: #35312b;
+    --accent: #e2a35b; --accent-soft: #3a2c1b; --on-ink: #151412;
+    --good: #6cc492; --good-soft: #193022; --warn: #e2b155; --warn-soft: #362a12; --bad: #f08578; --bad-soft: #3b1d19; --muted-soft: #2b2823;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #151412; --sheet: #1d1b18; --panel: #24211d; --ink: #f3f0e9; --ink-soft: #a9a398; --rule: #35312b;
+  --accent: #e2a35b; --accent-soft: #3a2c1b; --on-ink: #151412;
+  --good: #6cc492; --good-soft: #193022; --warn: #e2b155; --warn-soft: #362a12; --bad: #f08578; --bad-soft: #3b1d19; --muted-soft: #2b2823;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 780px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 22px; }
+h1, h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(40px, 10vw, 64px); line-height: 1.02; }
+h2 { font-size: 24px; line-height: 1.15; }
+.hl { color: var(--accent); }
+.eyebrow { font: 500 12px var(--font-mono); letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.lede { color: var(--ink-soft); margin: 0; max-width: 58ch; font-size: 16px; }
+header.top { display: grid; gap: 14px; }
+
+.slotbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); padding-block: 10px; display: grid; gap: 10px; border-bottom: 1px solid var(--rule); }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.seg button { font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.06em; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink-soft); padding: 11px 6px; border-radius: 8px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.tools input[type="search"] { flex: 1 1 180px; min-width: 0; font: 15px var(--font-body); padding: 10px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-soft); cursor: pointer; user-select: none; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--ink); }
+
+.tally { background: var(--panel); border: 1px solid var(--rule); border-radius: 22px; padding: 22px 18px; display: grid; gap: 18px; }
+.headline { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.big { font-family: var(--font-display); font-size: 72px; line-height: 0.9; font-weight: 600; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.big small { font-size: 32px; color: var(--accent); }
+.headline p { margin: 0; color: var(--ink-soft); max-width: 36ch; }
+.bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; background: var(--muted-soft); }
+.bar span { display: block; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+.c-person { background: var(--good); } .c-vm { background: var(--warn); } .c-none { background: var(--bad); } .c-dead { background: var(--ink-soft); }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 8px; border-bottom: 1px dashed var(--rule); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font: 500 11px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.fact { background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px; padding: 12px 14px; }
+.fact b { display: block; font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.fact span { font-size: 13px; color: var(--ink-soft); }
+
+details.script { background: var(--sheet); border: 1px solid var(--rule); border-radius: 18px; }
+details.script summary { cursor: pointer; padding: 16px 18px; font: 600 20px var(--font-display); letter-spacing: -0.01em; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+details.script summary::after { content: "Show"; font: 500 11px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; background: var(--ink); color: var(--on-ink); padding: 5px 9px; border-radius: 4px; }
+details.script[open] summary::after { content: "Hide"; }
+.script-body { padding: 0 18px 18px; display: grid; gap: 12px; max-width: 64ch; }
+.script-body p, .script-body ol { margin: 0; }
+.script-body ol { padding-left: 20px; display: grid; gap: 6px; }
+.script-body ol li::marker { color: var(--accent); font-weight: 600; }
+.say { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; font-weight: 500; }
+.rule-note { font-size: 13px; color: var(--ink-soft); }
+
+.list { display: grid; gap: 12px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 18px; padding: 16px; display: grid; gap: 12px; }
+.card.done { background: color-mix(in srgb, var(--sheet) 70%, var(--panel)); }
+.card-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.card-head > div { min-width: 0; }
+.name { font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.meta { font-size: 13px; color: var(--ink-soft); }
+.slots { display: flex; gap: 4px; flex-shrink: 0; }
+.dot { font: 500 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 7px; border-radius: 4px; background: var(--muted-soft); color: var(--ink-soft); }
+.dot.person { background: var(--good-soft); color: var(--good); } .dot.vm { background: var(--warn-soft); color: var(--warn); }
+.dot.none { background: var(--bad-soft); color: var(--bad); } .dot.dead { background: var(--muted-soft); color: var(--ink); text-decoration: line-through; }
+.dot.current { outline: 1.5px solid var(--ink); outline-offset: 1px; }
+.phone { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--font-mono); font-size: 19px; letter-spacing: 0.02em; user-select: all; }
+.mini { font: 600 13px var(--font-body); border: 1px solid var(--ink); background: var(--ink); color: var(--on-ink); padding: 7px 12px; border-radius: 6px; cursor: pointer; }
+.line { font: 500 10.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
+.outcomes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.outcomes button { font: 600 13px/1.15 var(--font-body); border: 1px solid var(--rule); background: var(--paper); color: var(--ink); padding: 12px 4px; border-radius: 8px; cursor: pointer; }
+.outcomes button[aria-pressed="true"][data-o="person"] { background: var(--good); border-color: var(--good); color: var(--on-ink); }
+.outcomes button[aria-pressed="true"][data-o="vm"] { background: var(--warn); border-color: var(--warn); color: var(--on-ink); }
+.outcomes button[aria-pressed="true"][data-o="none"] { background: var(--bad); border-color: var(--bad); color: var(--on-ink); }
+.outcomes button[aria-pressed="true"][data-o="dead"] { background: var(--ink-soft); border-color: var(--ink-soft); color: var(--on-ink); }
+.stamp { font: 500 11px var(--font-mono); letter-spacing: 0.06em; color: var(--ink-soft); }
+.extra { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; align-items: end; padding-top: 12px; border-top: 1px dashed var(--rule); }
+.extra label { display: grid; gap: 6px; font: 500 10.5px var(--font-mono); color: var(--ink-soft); letter-spacing: 0.16em; text-transform: uppercase; }
+.extra .check { display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font: 500 14px var(--font-body); color: var(--ink); }
+.extra .check input { width: 18px; height: 18px; accent-color: var(--ink); }
+.extra input[type="time"], .extra select, .extra textarea { font: 15px var(--font-body); letter-spacing: 0; text-transform: none; padding: 9px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); width: 100%; }
+.extra .full { grid-column: 1 / -1; }
+.extra textarea { min-height: 56px; resize: vertical; }
+.empty { background: var(--sheet); border: 1px dashed var(--rule); border-radius: 18px; padding: 28px 16px; color: var(--ink-soft); text-align: center; }
+.toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--on-ink); padding: 11px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); z-index: 10; }
+.foot { font-size: 13px; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+.credit { font: 500 11px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); border-top: 1px solid var(--rule); padding-top: 14px; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pscript { border: 1px solid var(--rule); border-radius: 14px; background: var(--paper); }
+.pscript summary { cursor: pointer; list-style: none; padding: 11px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font: 500 11px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); }
+.pscript summary::after { content: "Open"; font: 500 10.5px var(--font-mono); letter-spacing: 0.14em; background: var(--ink); color: var(--on-ink); padding: 4px 8px; border-radius: 4px; }
+.pscript[open] summary::after { content: "Close"; }
+.pscript summary::-webkit-details-marker { display: none; }
+.pscript-body { padding: 0 14px 14px; display: grid; gap: 10px; font-size: 15px; }
+.pscript-body p { margin: 0; }
+.pscript-body .q { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline; }
+.pscript-body .q span { font: 500 11px var(--font-mono); letter-spacing: 0.08em; color: var(--accent); }
+.pscript-body .tip { font-size: 13px; color: var(--ink-soft); }
+.extra input[type="number"] { font: 15px var(--font-body); padding: 9px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); width: 100%; letter-spacing: 0; text-transform: none; }
+@media (max-width: 420px) { .outcomes button { font-size: 12px; padding: 12px 2px; } .big { font-size: 60px; } .seg button { font-size: 11px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Missed-call audit · Limerick trades</div>
+    <h1>Every call, <span class="hl">logged</span>.</h1>
+    <p class="lede">49 electricians, plumbers and heating firms. Ring each one three times: weekday working hours, a weekday evening between 6 and 8pm, and Saturday morning. Log whether a person picks up.</p>
+  </header>
+
+  <section class="tally" aria-labelledby="tally-h">
+    <div class="eyebrow" id="tally-h">The tally</div>
+    <div class="headline">
+      <div class="big" id="headline-rate">–<small>%</small></div>
+      <p id="headline-text">answered by a person. Waiting for the call list to load.</p>
+    </div>
+    <div class="bar" id="mix-bar" aria-hidden="true"></div>
+    <div class="legend">
+      <span><i class="c-person"></i>Person</span><span><i class="c-vm"></i>Voicemail</span><span><i class="c-none"></i>No answer</span><span><i class="c-dead"></i>Dead line</span>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Slot</th><th>Calls</th><th>Person</th><th>Voicemail</th><th>No answer</th></tr></thead>
+        <tbody id="slot-table"></tbody>
+      </table>
+    </div>
+    <div class="facts">
+      <div class="fact"><b id="f-mobile">–</b><span>pick-up rate on mobiles (08x)</span></div>
+      <div class="fact"><b id="f-landline">–</b><span>pick-up rate on landlines (06x)</span></div>
+      <div class="fact"><b id="f-callback">–</b><span>of missed calls rang back</span></div>
+      <div class="fact"><b id="f-guests">–</b><span>podcast guests said yes</span></div>
+      <div class="fact"><b id="f-missedavg">–</b><span>calls a week owners say they miss (average)</span></div>
+      <div class="fact"><b id="f-owner">–</b><span>answer the phone themselves on a job</span></div>
+    </div>
+  </section>
+
+  <details class="script" id="script">
+    <summary>How the calls work</summary>
+    <div class="script-body">
+      <p>Every business has its own script on its card, written for their trade, their area and whether you're ringing a mobile or an office line. Open it before you dial.</p>
+      <ol>
+        <li>Tap the outcome the moment the call ends: Person, Voicemail, No answer or Dead line.</li>
+        <li>If someone picks up, ask the three questions and log each answer in its box.</li>
+        <li>Ask the podcast question last, then thank them and go.</li>
+      </ol>
+      <p class="rule-note">If it goes to voicemail, hang up without leaving a message. Never pitch CallCrew on these calls. No fake jobs. If they're busy, thank them and let them get back to work.</p>
+    </div>
+  </details>
+
+  <div class="slotbar">
+    <div class="seg" role="group" aria-label="Which call round you are logging">
+      <button type="button" data-slot="work" aria-pressed="true">01 / Day</button>
+      <button type="button" data-slot="eve" aria-pressed="false">02 / Evening</button>
+      <button type="button" data-slot="sat" aria-pressed="false">03 / Saturday</button>
+    </div>
+    <div class="tools">
+      <input type="search" id="search" placeholder="Search name or area" aria-label="Search name or area">
+      <label class="toggle"><input type="checkbox" id="todo-only"> Not called this round</label>
+    </div>
+  </div>
+
+  <div class="list" id="list"><div class="empty">Loading the call list…</div></div>
+
+  <div class="foot">
+    <span id="count-line"></span>
+    <button type="button" class="mini" id="export" hidden>Export CSV</button>
+  </div>
+  <p class="credit">Calls are saved on this device. Export a CSV when you finish each round.<br>Built by David Hackett as a proposal for CallCrew. Not an official CallCrew tool.</p>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function () {
+  const SLOTS = [
+    { id: "work", label: "Working hours", short: "Day" },
+    { id: "eve", label: "Evening 6 to 8pm", short: "Eve" },
+    { id: "sat", label: "Saturday morning", short: "Sat" }
+  ];
+  const OUTCOMES = [
+    { id: "person", label: "Person" },
+    { id: "vm", label: "Voicemail" },
+    { id: "none", label: "No answer" },
+    { id: "dead", label: "Dead line" }
+  ];
+  const state = { businesses: [], calls: new Map(), notes: new Map(), slot: "work", search: "", todoOnly: false, loaded: false, readOnly: false };
+  let db = null, downloads = null, pendingListRender = false;
+  const writeChains = new Map();
+
+  try { const s = localStorage.getItem("mca-slot"); if (s && SLOTS.some(x => x.id === s)) state.slot = s; } catch (e) {}
+
+  const $ = id => document.getElementById(id);
+  const list = $("list");
+
+  function toast(msg) {
+    const t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toast._t); toast._t = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+  function lineType(phone) { return phone.replace(/\D/g, "").startsWith("08") ? "mobile" : "landline"; }
+  function pct(n, d) { return d ? Math.round((n / d) * 100) + "%" : "–"; }
+  function hhmm(iso) { if (!iso) return ""; const d = new Date(iso); return d.toLocaleString("en-IE", { weekday: "short", hour: "2-digit", minute: "2-digit" }); }
+  function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+  function callKey(bid, slot) { return bid + "__" + slot; }
+  const openScripts = new Set();
+  const TRADE = {
+    "Electrical": { noun: "electricians", job: "up a ladder or in the middle of a rewire" },
+    "Plumbing & heating": { noun: "plumbers and heating engineers", job: "under a sink or stripping down a boiler" },
+    "Drains": { noun: "drainage firms", job: "out on an emergency blockage" }
+  };
+  const FOLLOW = [["", "Not asked"], ["all", "Ring them all back"], ["some", "Some of them"], ["rarely", "Rarely"], ["never", "Never"]];
+  const WHO = [["", "Not asked"], ["owner", "The owner, themselves"], ["office", "Office staff"], ["family", "Family member"], ["service", "Answering service"], ["nobody", "Nobody, it rings out"]];
+  function opts(list, cur) { return list.map(([v, l]) => `<option value="${v}" ${cur === v ? "selected" : ""}>${l}</option>`).join(""); }
+  function scriptFor(b) {
+    const t = TRADE[b.trade] || { noun: "tradespeople", job: "out on a job" };
+    const area = String(b.area).split(",")[0].trim();
+    const mobile = lineType(b.phone) === "mobile";
+    const q3 = mobile
+      ? "Is this your own mobile, so you're answering between jobs yourself?"
+      : "When this line rings and nobody's in the office, where does it go?";
+    return `<details class="pscript" data-bid="${b.id}" ${openScripts.has(b.id) ? "open" : ""}>
+      <summary>Script for ${esc(b.name)}</summary>
+      <div class="pscript-body">
+        <p class="say">"Hi, is that ${esc(b.name)}? My name's David Hackett, I'm from Limerick. I'm doing a short survey on how ${esc(t.noun)} around ${esc(area)} handle their phones. Have you got 30 seconds?"</p>
+        <div class="q"><span>Q1</span><p>"Roughly how many calls a week would you say you miss when you're ${esc(t.job)}?"</p></div>
+        <div class="q"><span>Q2</span><p>"And what happens to those callers? Do you get back to them?"</p></div>
+        <div class="q"><span>Q3</span><p>"${q3}"</p></div>
+        <p class="say">"Last thing: I'm putting together a show on how Irish trades businesses are run. Would you be up for coming on as a guest for 30 minutes?"</p>
+        <p class="tip">Thank them and let them go. Voicemail: hang up without a message.</p>
+      </div>
+    </details>`;
+  }
+
+  function queueWrite(path, fn) {
+    const prev = writeChains.get(path) || Promise.resolve();
+    const next = prev.catch(() => {}).then(fn).catch(err => {
+      if (err && err.code === "invalid_argument") { state.readOnly = true; toast("This list is read-only for you."); render(); }
+      else if (err && err.code === "unavailable") { toast("Couldn't save just now. Tap again in a moment."); }
+      else { toast("Couldn't save that change."); }
+    });
+    writeChains.set(path, next);
+    return next;
+  }
+
+  function setOutcome(bid, outcome) {
+    if (!db || state.readOnly) return;
+    const key = callKey(bid, state.slot);
+    const cur = state.calls.get(key) || {};
+    const body = cur.outcome === outcome
+      ? { bid, slot: state.slot, outcome: null, at: null, rangBack: false, callbackAt: "" }
+      : { bid, slot: state.slot, outcome, at: new Date().toISOString(), rangBack: !!cur.rangBack, callbackAt: cur.callbackAt || "" };
+    state.calls.set(key, body); render();
+    queueWrite("calls/" + key, () => db.collection("calls").doc(key).set(body));
+  }
+  function setCallField(bid, field, value) {
+    if (!db || state.readOnly) return;
+    const key = callKey(bid, state.slot);
+    const cur = state.calls.get(key) || { bid, slot: state.slot, outcome: null, at: null, rangBack: false, callbackAt: "" };
+    const body = Object.assign({}, cur, { [field]: value });
+    state.calls.set(key, body); renderTally();
+    queueWrite("calls/" + key, () => db.collection("calls").doc(key).set(body));
+  }
+  function setNoteField(bid, field, value) {
+    if (!db || state.readOnly) return;
+    const cur = state.notes.get(bid) || { note: "", guest: "" };
+    if (cur[field] === value) return;
+    const body = Object.assign({}, cur, { [field]: value });
+    state.notes.set(bid, body); renderTally();
+    queueWrite("notes/" + bid, () => db.collection("notes").doc(bid).set(body));
+  }
+
+  function slotStats(slotId) {
+    const s = { calls: 0, person: 0, vm: 0, none: 0, dead: 0 };
+    for (const c of state.calls.values()) {
+      if ((slotId && c.slot !== slotId) || !c.outcome) continue;
+      s.calls++; s[c.outcome]++;
+    }
+    return s;
+  }
+
+  function renderTally() {
+    const all = slotStats(null);
+    const live = all.calls - all.dead;
+    $("headline-rate").innerHTML = (live ? Math.round((all.person / live) * 100) : "–") + "<small>%</small>";
+    $("headline-text").textContent = !state.loaded ? "answered by a person. Waiting for the call list to load."
+      : all.calls ? `of calls to working numbers were answered by a person (${all.person} of ${live}, across ${all.calls} calls logged).`
+      : "answered by a person. No calls logged yet: pick a round below and start ringing.";
+    const bar = $("mix-bar");
+    bar.innerHTML = all.calls ? ["person", "vm", "none", "dead"].map(o => all[o] ? `<span class="c-${o}" style="width:${(all[o] / all.calls) * 100}%"></span>` : "").join("") : "";
+    $("slot-table").innerHTML = SLOTS.map(sl => {
+      const s = slotStats(sl.id), d = s.calls - s.dead;
+      return `<tr><td>${sl.label}</td><td>${s.calls}</td><td>${pct(s.person, d)}</td><td>${pct(s.vm, d)}</td><td>${pct(s.none, d)}</td></tr>`;
+    }).join("");
+    const byLine = { mobile: { n: 0, p: 0 }, landline: { n: 0, p: 0 } };
+    let missed = 0, rang = 0;
+    const phoneOf = new Map(state.businesses.map(b => [b.id, b.phone]));
+    for (const c of state.calls.values()) {
+      if (!c.outcome || c.outcome === "dead") continue;
+      const lt = lineType(phoneOf.get(c.bid) || "");
+      byLine[lt].n++; if (c.outcome === "person") byLine[lt].p++;
+      if (c.outcome === "vm" || c.outcome === "none") { missed++; if (c.rangBack) rang++; }
+    }
+    $("f-mobile").textContent = pct(byLine.mobile.p, byLine.mobile.n);
+    $("f-landline").textContent = pct(byLine.landline.p, byLine.landline.n);
+    $("f-callback").textContent = pct(rang, missed);
+    let guests = 0; for (const n of state.notes.values()) if (n.guest === "yes") guests++;
+    $("f-guests").textContent = state.loaded ? String(guests) : "–";
+    let mSum = 0, mN = 0, wN = 0, wOwner = 0;
+    for (const n of state.notes.values()) {
+      if (n.missedWeek !== "" && n.missedWeek != null && Number.isFinite(Number(n.missedWeek))) { mSum += Number(n.missedWeek); mN++; }
+      if (n.whoAnswers) { wN++; if (n.whoAnswers === "owner") wOwner++; }
+    }
+    $("f-missedavg").textContent = mN ? (Math.round((mSum / mN) * 10) / 10).toLocaleString("en-IE") : "–";
+    $("f-owner").textContent = pct(wOwner, wN);
+  }
+
+  function cardHtml(b) {
+    const key = callKey(b.id, state.slot);
+    const c = state.calls.get(key) || {};
+    const n = state.notes.get(b.id) || { note: "", guest: "" };
+    const dots = SLOTS.map(sl => {
+      const o = (state.calls.get(callKey(b.id, sl.id)) || {}).outcome || "";
+      return `<span class="dot ${o} ${sl.id === state.slot ? "current" : ""}" title="${sl.label}: ${o ? OUTCOMES.find(x => x.id === o).label : "not called"}">${sl.short}</span>`;
+    }).join("");
+    const dis = state.readOnly ? "disabled" : "";
+    const btns = OUTCOMES.map(o => `<button type="button" data-act="outcome" data-bid="${b.id}" data-o="${o.id}" aria-pressed="${c.outcome === o.id}" ${dis}>${o.label}</button>`).join("");
+    const missed = c.outcome === "vm" || c.outcome === "none";
+    return `<article class="card ${c.outcome ? "done" : ""}" data-bid="${b.id}">
+      <div class="card-head"><div><div class="name">${esc(b.name)}</div><div class="meta">${esc(b.trade)} · ${esc(b.area)}</div></div><div class="slots">${dots}</div></div>
+      <div class="phone"><span class="num" id="num-${b.id}">${esc(b.phone)}</span><button type="button" class="mini" data-act="copy" data-bid="${b.id}">Copy</button><span class="line">${lineType(b.phone) === "mobile" ? "Mobile" : "Landline"}</span></div>
+      ${scriptFor(b)}
+      <div class="outcomes" role="group" aria-label="Outcome for ${esc(b.name)}, ${SLOTS.find(s => s.id === state.slot).label}">${btns}</div>
+      ${c.at ? `<div class="stamp">Logged ${hhmm(c.at)}</div>` : ""}
+      <div class="extra">
+        ${missed ? `<label class="check"><input type="checkbox" id="rb-${b.id}" data-act="rang" data-bid="${b.id}" ${c.rangBack ? "checked" : ""} ${dis}> They rang back</label>
+        <label for="cb-${b.id}">Callback time<input type="time" id="cb-${b.id}" data-act="cbtime" data-bid="${b.id}" value="${esc(c.callbackAt || "")}" ${dis}></label>` : ""}
+        <label for="mw-${b.id}">Q1 · Missed a week<input type="number" inputmode="numeric" min="0" max="500" id="mw-${b.id}" data-act="missedWeek" data-bid="${b.id}" value="${esc(n.missedWeek ?? "")}" placeholder="e.g. 5" ${dis}></label>
+        <label for="fu-${b.id}">Q2 · Missed callers<select id="fu-${b.id}" data-act="followUp" data-bid="${b.id}" ${dis}>${opts(FOLLOW, n.followUp || "")}</select></label>
+        <label class="full" for="wa-${b.id}">Q3 · Who answers on a job<select id="wa-${b.id}" data-act="whoAnswers" data-bid="${b.id}" ${dis}>${opts(WHO, n.whoAnswers || "")}</select></label>
+        <label class="full" for="g-${b.id}">Podcast guest<select id="g-${b.id}" data-act="guest" data-bid="${b.id}" ${dis}>
+          <option value="" ${!n.guest ? "selected" : ""}>Not asked</option><option value="yes" ${n.guest === "yes" ? "selected" : ""}>Yes</option>
+          <option value="maybe" ${n.guest === "maybe" ? "selected" : ""}>Maybe</option><option value="no" ${n.guest === "no" ? "selected" : ""}>No</option></select></label>
+        <label class="full" for="n-${b.id}">Notes<textarea id="n-${b.id}" data-act="note" data-bid="${b.id}" placeholder="Anything else they said, in their words" ${dis}>${esc(n.note)}</textarea></label>
+      </div>
+    </article>`;
+  }
+
+  function renderList() {
+    const a = document.activeElement;
+    if (a && list.contains(a) && /^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName)) { pendingListRender = true; return; }
+    pendingListRender = false;
+    if (!state.loaded) { list.innerHTML = `<div class="empty">Loading the call list…</div>`; return; }
+    if (!state.businesses.length) { list.innerHTML = `<div class="empty">No businesses on the list yet. They'll appear here as soon as the list is added.</div>`; return; }
+    const q = state.search.trim().toLowerCase();
+    const rows = state.businesses.filter(b => {
+      if (q && !(b.name + " " + b.area + " " + b.trade).toLowerCase().includes(q)) return false;
+      if (state.todoOnly && (state.calls.get(callKey(b.id, state.slot)) || {}).outcome) return false;
+      return true;
+    });
+    list.innerHTML = rows.length ? rows.map(cardHtml).join("") : `<div class="empty">${state.todoOnly ? "Every business on this list has been rung this round." : "No business matches that search."}</div>`;
+    const done = state.businesses.filter(b => (state.calls.get(callKey(b.id, state.slot)) || {}).outcome).length;
+    $("count-line").textContent = `${done} of ${state.businesses.length} rung this round (${SLOTS.find(s => s.id === state.slot).label})`;
+  }
+
+  function render() {
+    document.querySelectorAll(".seg button").forEach(btn => btn.setAttribute("aria-pressed", String(btn.dataset.slot === state.slot)));
+    renderTally(); renderList();
+  }
+
+  list.addEventListener("click", e => {
+    const t = e.target.closest("[data-act]"); if (!t) return;
+    const bid = t.dataset.bid;
+    if (t.dataset.act === "outcome") setOutcome(bid, t.dataset.o);
+    if (t.dataset.act === "copy") {
+      const span = $("num-" + bid); const text = span.textContent.replace(/\s/g, "");
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents(span); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Number selected. Copy it from your menu."); };
+      try { navigator.clipboard.writeText(text).then(() => toast("Copied " + span.textContent), fallback); } catch (err) { fallback(); }
+    }
+  });
+  list.addEventListener("change", e => {
+    const t = e.target; const bid = t.dataset.bid; if (!bid) return;
+    if (t.dataset.act === "rang") setCallField(bid, "rangBack", t.checked);
+    if (t.dataset.act === "cbtime") setCallField(bid, "callbackAt", t.value);
+    if (t.dataset.act === "guest") setNoteField(bid, "guest", t.value);
+    if (t.dataset.act === "note") setNoteField(bid, "note", t.value);
+    if (t.dataset.act === "missedWeek") setNoteField(bid, "missedWeek", t.value === "" ? "" : Math.max(0, Math.round(Number(t.value))));
+    if (t.dataset.act === "followUp") setNoteField(bid, "followUp", t.value);
+    if (t.dataset.act === "whoAnswers") setNoteField(bid, "whoAnswers", t.value);
+  });
+  list.addEventListener("toggle", e => {
+    const d = e.target;
+    if (d && d.classList && d.classList.contains("pscript")) { if (d.open) openScripts.add(d.dataset.bid); else openScripts.delete(d.dataset.bid); }
+  }, true);
+  list.addEventListener("focusout", () => { setTimeout(() => { if (pendingListRender) renderList(); }, 0); });
+
+  document.querySelector(".seg").addEventListener("click", e => {
+    const b = e.target.closest("button[data-slot]"); if (!b) return;
+    state.slot = b.dataset.slot; try { localStorage.setItem("mca-slot", state.slot); } catch (err) {}
+    render();
+  });
+  $("search").addEventListener("input", e => { state.search = e.target.value; renderList(); });
+  $("todo-only").addEventListener("change", e => { state.todoOnly = e.target.checked; renderList(); });
+
+  function csvCell(v) { const s = String(v ?? ""); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  $("export").addEventListener("click", async () => {
+    if (!downloads) return;
+    const head = ["Business", "Trade", "Area", "Phone", "Line"];
+    SLOTS.forEach(s => head.push(s.label + " outcome", s.label + " time", s.label + " rang back", s.label + " callback time"));
+    head.push("Q1 missed calls a week", "Q2 what happens to missed callers", "Q3 who answers on a job", "Podcast guest", "Notes");
+    const rows = [head];
+    for (const b of state.businesses) {
+      const r = [b.name, b.trade, b.area, b.phone, lineType(b.phone)];
+      SLOTS.forEach(s => { const c = state.calls.get(callKey(b.id, s.id)) || {}; const o = OUTCOMES.find(x => x.id === c.outcome); r.push(o ? o.label : "", c.at ? new Date(c.at).toLocaleString("en-IE") : "", c.rangBack ? "yes" : "", c.callbackAt || ""); });
+      const n = state.notes.get(b.id) || {};
+      const lbl = (list2, v) => (list2.find(x => x[0] === v) || ["", ""])[1];
+      r.push(n.missedWeek ?? "", n.followUp ? lbl(FOLLOW, n.followUp) : "", n.whoAnswers ? lbl(WHO, n.whoAnswers) : "", n.guest || "", n.note || "");
+      rows.push(r);
+    }
+    const csv = rows.map(r => r.map(csvCell).join(",")).join("\n");
+    try { await downloads.save({ filename: "missed-call-audit.csv", data: csv }); toast("Saved missed-call-audit.csv"); }
+    catch (err) { if (err && err.code === "declined") return; if (err && err.code === "rate_limited") toast("A save is already open."); else toast("Export isn't available here."); }
+  });
+
+  render();
+
+  // On-device storage: calls and notes live in this browser's localStorage.
+  const KEY = { calls: "mca-calls-v1", notes: "mca-notes-v1" };
+  let storageOk = true;
+  function readStore(name) { try { return JSON.parse(localStorage.getItem(KEY[name]) || "{}"); } catch (e) { storageOk = false; return {}; } }
+  function writeStore(name, obj) { try { localStorage.setItem(KEY[name], JSON.stringify(obj)); } catch (e) { storageOk = false; throw { code: "unavailable" }; } }
+  db = {
+    collection(name) {
+      return { doc(id) { return { set(body) { const all = readStore(name); all[id] = body; writeStore(name, all); return Promise.resolve(); } }; } };
+    }
+  };
+  downloads = {
+    save({ filename, data }) {
+      const url = URL.createObjectURL(new Blob([data], { type: "text/csv;charset=utf-8" }));
+      const a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return Promise.resolve({ status: "saved" });
+    }
+  };
+  $("export").hidden = false;
+  fetch("businesses.json").then(r => r.json()).then(rows => {
+    state.businesses = rows;
+    state.calls = new Map(Object.entries(readStore("calls")));
+    state.notes = new Map(Object.entries(readStore("notes")));
+    state.loaded = true; render();
+    if (!storageOk) toast("This browser isn't saving. Use a normal (not private) window.");
+  }).catch(() => { state.loaded = true; list.innerHTML = '<div class="empty">Couldn\'t load the call list. Check your connection and reload.</div>'; });
+})();
+</script>
+
+</body>
+</html>

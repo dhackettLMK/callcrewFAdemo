@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-IE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>David Hackett · Proof of Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: warm off-white field kit. One display headline with an ochre word, then three numbered tool cards in sequence. */
+:root {
+  --paper: #f5f2ec; --sheet: #fcfbf8; --panel: #ece8df; --ink: #111111; --ink-soft: #5f5a52; --rule: #e1dcd2;
+  --accent: #c9853a; --on-ink: #fcfbf8;
+  --font-display: "Sora", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #151412; --sheet: #1d1b18; --panel: #24211d; --ink: #f3f0e9; --ink-soft: #a9a398; --rule: #35312b; --accent: #e2a35b; --on-ink: #151412; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: max(32px, env(safe-area-inset-top, 0px)) 56px; display: grid; gap: 40px; }
+.eyebrow { font: 500 12px var(--font-mono); letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); display: flex; align-items: center; gap: 10px; margin: 0; }
+.eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(42px, 9vw, 84px); line-height: 1.02; letter-spacing: -0.035em; margin: 18px 0 0; max-width: 14ch; text-wrap: balance; }
+.hl { color: var(--accent); }
+.lede { color: var(--ink-soft); max-width: 58ch; margin: 20px 0 0; font-size: 17px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 22px; padding: 22px; display: grid; gap: 14px; align-content: start; text-decoration: none; color: inherit; }
+.card:hover { border-color: var(--ink-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.step { font: 500 12px var(--font-mono); letter-spacing: 0.08em; color: var(--ink-soft); }
+.tag { font: 500 10.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; background: var(--ink); color: var(--on-ink); padding: 5px 9px; border-radius: 4px; }
+.card h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; letter-spacing: -0.02em; line-height: 1.15; margin: 0; }
+.card p { margin: 0; color: var(--ink-soft); }
+.go { font-weight: 600; }
+.note { background: var(--panel); border: 1px solid var(--rule); border-radius: 22px; padding: 22px; display: grid; gap: 8px; }
+.note h2 { font-family: var(--font-display); font-weight: 600; font-size: 20px; letter-spacing: -0.01em; margin: 0; }
+.note p { margin: 0; color: var(--ink-soft); max-width: 70ch; }
+footer { font: 500 11px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); border-top: 1px solid var(--rule); padding-top: 16px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Founder's Associate application</p>
+    <h1>Less talk, more <span class="hl">proof</span>.</h1>
+    <p class="lede">Two working tools and a plan, built for CallCrew by David Hackett. The audit rings real Limerick trades businesses to see who picks up. The meter shows an owner what the ones they miss are worth.</p>
+  </header>
+
+  <section class="cards" aria-label="Tools">
+    <a class="card" href="tracker/">
+      <div class="card-top"><span class="step">01 / Audit</span><span class="tag">Live</span></div>
+      <h2>Missed-Call Audit</h2>
+      <p>49 Limerick electricians, plumbers and heating firms, each rung in working hours, on a weekday evening and on Saturday morning. Live pick-up rates by time of day and line type.</p>
+      <span class="go">Open the tracker →</span>
+    </a>
+    <a class="card" href="calculator/">
+      <div class="card-top"><span class="step">02 / Meter</span><span class="tag">Tool</span></div>
+      <h2>Missed Call Meter</h2>
+      <p>Calls a week, share missed, share who'd have booked, average job. Out comes the revenue lost each year, with the sum shown in full.</p>
+      <span class="go">Try the meter →</span>
+    </a>
+    <div class="card">
+      <div class="card-top"><span class="step">03 / Plan</span><span class="tag">Memo</span></div>
+      <h2>First 90 days</h2>
+      <p>What I noticed from the outside, the risks worth fixing now, new channels to test and how I'd spend my first three months. Shared directly with Adelin and Emmanuel.</p>
+    </div>
+  </section>
+
+  <section class="note">
+    <h2>How the audit stays honest</h2>
+    <p>The list comes from numbers businesses advertise to customers, not from regulator registers, which ask not to be used for marketing. Anyone who answers hears it's a short survey. No fake jobs and no sales pitch.</p>
+  </section>
+
+  <footer>Built by David Hackett as a proposal for CallCrew. Not an official CallCrew site.</footer>
+</main>
+</body>
+</html>

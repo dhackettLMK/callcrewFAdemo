@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en-IE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>html{color-scheme:light}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Missed Call Meter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: warm off-white field kit. Display headline with one ochre word, a dark meter face reading lost revenue, four controls in a panel card, the sum shown in mono underneath. */
+:root {
+  --ground: #f5f2ec;
+  --panel: #ece8df;
+  --sheet: #fcfbf8;
+  --ink: #111111;
+  --ink-soft: #5f5a52;
+  --rule: #e1dcd2;
+  --face: #141311;
+  --face-ink: #f5f2ec;
+  --drum: #26231f;
+  --signal: #c9853a;
+  --brass: #c9853a;
+  --font-display: "Sora", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-digits: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #151412; --panel: #24211d; --sheet: #1d1b18; --ink: #f3f0e9; --ink-soft: #a9a398; --rule: #35312b;
+    --face: #0b0a09; --face-ink: #f3f0e9; --drum: #1f1d1a; --signal: #e2a35b; --brass: #e2a35b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #151412; --panel: #24211d; --sheet: #1d1b18; --ink: #f3f0e9; --ink-soft: #a9a398; --rule: #35312b;
+  --face: #0b0a09; --face-ink: #f3f0e9; --drum: #1f1d1a; --signal: #e2a35b; --brass: #e2a35b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 680px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 22px; }
+.kicker { font: 500 12px var(--font-digits); letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); margin: 0; display: flex; align-items: center; gap: 10px; }
+.kicker::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(40px, 10vw, 62px); line-height: 1.02; letter-spacing: -0.03em; margin: 14px 0 0; text-wrap: balance; }
+.hl { color: var(--brass); }
+.intro { margin: 14px 0 0; color: var(--ink-soft); max-width: 52ch; font-size: 16px; }
+
+.meter { background: var(--face); color: var(--face-ink); border-radius: 22px; padding: 22px 18px 18px; display: grid; gap: 16px; }
+.meter-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font: 500 11px var(--font-digits); letter-spacing: 0.18em; text-transform: uppercase; color: color-mix(in srgb, var(--face-ink) 65%, transparent); }
+.drums { display: flex; justify-content: center; align-items: center; gap: 4px; font-family: var(--font-digits); font-weight: 700; }
+.euro { font-size: clamp(26px, 8vw, 40px); margin-right: 4px; color: var(--face-ink); }
+.drum { width: clamp(30px, 10vw, 48px); height: clamp(48px, 15vw, 72px); background: var(--drum); border-radius: 8px; overflow: hidden; position: relative; }
+.drum.lead .strip { opacity: 0.25; }
+.drum.red { background: var(--signal); color: var(--face); }
+.strip { position: absolute; left: 0; right: 0; top: 0; transition: transform 700ms cubic-bezier(.2,.8,.2,1); }
+.strip span { display: flex; align-items: center; justify-content: center; height: clamp(48px, 15vw, 72px); font-size: clamp(28px, 9vw, 44px); }
+.sep { width: 6px; }
+.meter-caption { text-align: center; font-size: 14px; color: color-mix(in srgb, var(--face-ink) 80%, transparent); margin: 0; }
+.readouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.readout { border: 1px solid color-mix(in srgb, var(--face-ink) 14%, transparent); border-radius: 12px; padding: 10px; text-align: center; }
+.readout b { display: block; font-family: var(--font-display); font-weight: 600; font-size: clamp(18px, 5vw, 24px); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.readout span { font-size: 12px; color: color-mix(in srgb, var(--face-ink) 65%, transparent); }
+
+.controls { background: var(--panel); border: 1px solid var(--rule); border-radius: 22px; padding: 20px 18px; display: grid; gap: 20px; }
+.controls-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.controls-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; letter-spacing: -0.02em; margin: 0; }
+.example { font: 500 10.5px var(--font-digits); letter-spacing: 0.14em; text-transform: uppercase; background: var(--ink); color: var(--ground); padding: 5px 9px; border-radius: 4px; }
+.field { display: grid; gap: 8px; }
+.field-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.field label { font-weight: 600; }
+.field small { display: block; font-size: 13px; color: var(--ink-soft); font-weight: 400; }
+.num { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.num input { width: 92px; font: 600 17px var(--font-digits); text-align: right; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); }
+.num em { font-style: normal; color: var(--ink-soft); font-size: 14px; min-width: 14px; }
+input[type="range"] { width: 100%; accent-color: var(--ink); height: 28px; }
+.reset { justify-self: start; font: 600 14px var(--font-body); background: var(--ink); border: 1px solid var(--ink); color: var(--ground); border-radius: 6px; padding: 9px 14px; cursor: pointer; }
+
+.sum { background: var(--sheet); border: 1px solid var(--rule); border-radius: 18px; padding: 18px; display: grid; gap: 10px; }
+.sum h2 { font-family: var(--font-display); font-weight: 600; font-size: 20px; letter-spacing: -0.01em; margin: 0; }
+.sum p { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+.formula { font-family: var(--font-digits); font-size: 14px; line-height: 1.7; color: var(--ink); overflow-x: auto; white-space: nowrap; padding-bottom: 2px; }
+footer { font: 500 11px var(--font-digits); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); border-top: 1px solid var(--rule); padding-top: 14px; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .strip { transition: none; } }
+@media (max-width: 400px) { .readouts { grid-template-columns: 1fr; } .num input { width: 80px; } }
+</style>
+</head>
+<body>
+
+
+<main class="wrap">
+  <header>
+    <p class="kicker">Missed call meter</p>
+    <h1>What missed calls <span class="hl">cost</span> you.</h1>
+    <p class="intro">Every call you can't take is a job that might go to whoever picks up next. Put in your own numbers and see what that adds up to over a year.</p>
+  </header>
+
+  <section class="meter" aria-labelledby="meter-label">
+    <div class="meter-top"><span id="meter-label">Revenue lost per year</span><span>Euro</span></div>
+    <div class="drums" id="drums" aria-hidden="true"></div>
+    <p class="meter-caption" id="meter-caption" aria-live="polite"></p>
+    <div class="readouts">
+      <div class="readout"><b id="r-missed">0</b><span>missed calls a month</span></div>
+      <div class="readout"><b id="r-jobs">0</b><span>jobs lost a month</span></div>
+      <div class="readout"><b id="r-month">€0</b><span>lost a month</span></div>
+    </div>
+  </section>
+
+  <section class="controls" aria-labelledby="controls-h">
+    <div class="controls-head"><h2 id="controls-h">Your numbers</h2><span class="example" id="example-flag">Example inputs, not statistics</span></div>
+
+    <div class="field">
+      <div class="field-top"><label for="calls">Calls a week<small>Every call to the business number</small></label>
+        <span class="num"><input type="number" id="calls-n" inputmode="numeric" min="1" max="1000" aria-label="Calls a week"><em></em></span></div>
+      <input type="range" id="calls" min="5" max="300" step="1" aria-label="Calls a week slider">
+    </div>
+    <div class="field">
+      <div class="field-top"><label for="missed">Calls you miss<small>On a job, driving, after hours</small></label>
+        <span class="num"><input type="number" id="missed-n" inputmode="numeric" min="0" max="100" aria-label="Percent of calls missed"><em>%</em></span></div>
+      <input type="range" id="missed" min="0" max="80" step="1" aria-label="Percent of calls missed slider">
+    </div>
+    <div class="field">
+      <div class="field-top"><label for="book">Would have booked<small>Share of missed callers who wanted a job done</small></label>
+        <span class="num"><input type="number" id="book-n" inputmode="numeric" min="0" max="100" aria-label="Percent of missed callers who would have booked"><em>%</em></span></div>
+      <input type="range" id="book" min="0" max="100" step="1" aria-label="Percent who would have booked slider">
+    </div>
+    <div class="field">
+      <div class="field-top"><label for="value">Average job<small>What a typical job is worth to you</small></label>
+        <span class="num"><em>€</em><input type="number" id="value-n" inputmode="numeric" min="0" max="50000" aria-label="Average job value in euro"></span></div>
+      <input type="range" id="value" min="50" max="5000" step="10" aria-label="Average job value slider">
+    </div>
+    <button type="button" class="reset" id="reset">Back to example inputs</button>
+  </section>
+
+  <section class="sum" aria-labelledby="sum-h">
+    <h2 id="sum-h">How it's worked out</h2>
+    <p>No hidden assumptions. A month here is a year divided by 12, so 52 weeks ÷ 12, or about 4.33 weeks.</p>
+    <div class="formula" id="formula"></div>
+  </section>
+
+  <footer>Built by David Hackett as a proposal for CallCrew. Not an official CallCrew tool.</footer>
+</main>
+
+<script>
+(function () {
+  const DEFAULTS = { calls: 40, missed: 25, book: 30, value: 250 };
+  const WEEKS_PER_MONTH = 52 / 12;
+  const DIGITS = 7;
+  const v = Object.assign({}, DEFAULTS);
+  const $ = id => document.getElementById(id);
+  const eur = n => "€" + Math.round(n).toLocaleString("en-IE");
+  const one = n => (Math.round(n * 10) / 10).toLocaleString("en-IE");
+
+  const drums = $("drums");
+  const strips = [];
+  drums.insertAdjacentHTML("beforeend", '<span class="euro">€</span>');
+  for (let i = 0; i < DIGITS; i++) {
+    if (i === 1 || i === 4) drums.insertAdjacentHTML("beforeend", '<span class="sep"></span>');
+    const d = document.createElement("div");
+    d.className = "drum" + (i >= DIGITS - 3 ? " red" : "");
+    const s = document.createElement("div");
+    s.className = "strip";
+    s.innerHTML = Array.from({ length: 10 }, (_, k) => "<span>" + k + "</span>").join("");
+    d.appendChild(s); drums.appendChild(d); strips.push({ d, s });
+  }
+
+  function clamp(n, lo, hi) { return Math.min(hi, Math.max(lo, n)); }
+  const LIMITS = { calls: [1, 1000], missed: [0, 100], book: [0, 100], value: [0, 50000] };
+
+  function render() {
+    const missedMonth = v.calls * (v.missed / 100) * WEEKS_PER_MONTH;
+    const jobsMonth = missedMonth * (v.book / 100);
+    const lostMonth = jobsMonth * v.value;
+    const lostYear = lostMonth * 12;
+    const yearRounded = clamp(Math.round(lostYear), 0, 9999999);
+    const str = String(yearRounded).padStart(DIGITS, "0");
+    const firstSig = str.search(/[1-9]/);
+    strips.forEach((x, i) => {
+      x.s.style.transform = "translateY(-" + (Number(str[i]) * 10) + "%)";
+      x.d.classList.toggle("lead", firstSig === -1 ? i < DIGITS - 1 : i < firstSig);
+    });
+    $("r-missed").textContent = one(missedMonth);
+    $("r-jobs").textContent = one(jobsMonth);
+    $("r-month").textContent = eur(lostMonth);
+    const jobsWeek = jobsMonth / WEEKS_PER_MONTH;
+    $("meter-caption").textContent = lostYear > 0
+      ? eur(lostYear) + " a year. That's about " + one(jobsWeek) + " " + (Math.abs(jobsWeek - 1) < 0.05 ? "job" : "jobs") + " a week going to someone else."
+      : "Nothing lost with these numbers.";
+    $("formula").innerHTML =
+      v.calls + " calls × " + v.missed + "% missed × " + v.book + "% would book × €" + v.value.toLocaleString("en-IE") + "<br>" +
+      "= " + one(jobsWeek) + " lost jobs a week × 52 weeks = " + eur(lostYear) + " a year";
+    const isDefault = Object.keys(DEFAULTS).every(k => v[k] === DEFAULTS[k]);
+    $("example-flag").textContent = isDefault ? "Example inputs, not statistics" : "Your inputs";
+    $("reset").hidden = isDefault;
+  }
+
+  function sync(key, from) {
+    const range = $(key), num = $(key + "-n");
+    if (from !== "range") range.value = clamp(v[key], Number(range.min), Number(range.max));
+    if (from !== "num") num.value = v[key];
+  }
+
+  Object.keys(DEFAULTS).forEach(key => {
+    const range = $(key), num = $(key + "-n");
+    range.addEventListener("input", () => { v[key] = Number(range.value); sync(key, "range"); render(); });
+    num.addEventListener("input", () => {
+      if (num.value === "") return;
+      const n = Number(num.value); if (!Number.isFinite(n)) return;
+      v[key] = clamp(Math.round(n), LIMITS[key][0], LIMITS[key][1]);
+      sync(key, "num"); render();
+    });
+    num.addEventListener("blur", () => { num.value = v[key]; });
+    sync(key);
+  });
+  $("reset").addEventListener("click", () => { Object.assign(v, DEFAULTS); Object.keys(DEFAULTS).forEach(k => sync(k)); render(); });
+  render();
+})();
+</script>
+
+</body>
+</html>

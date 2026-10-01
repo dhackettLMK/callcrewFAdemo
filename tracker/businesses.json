@@ -1,0 +1,394 @@
+[
+ {
+  "id": "b01",
+  "name": "Drish Electrical",
+  "trade": "Electrical",
+  "area": "Thurles, Tipperary",
+  "phone": "083 026 7034",
+  "order": 1
+ },
+ {
+  "id": "b02",
+  "name": "J. Moran Electrical Ltd",
+  "trade": "Electrical",
+  "area": "Newcastle West",
+  "phone": "086 253 8477",
+  "order": 2
+ },
+ {
+  "id": "b03",
+  "name": "Emerald Electrical Contractors",
+  "trade": "Electrical",
+  "area": "Castletroy",
+  "phone": "087 942 7453",
+  "order": 3
+ },
+ {
+  "id": "b04",
+  "name": "P.T. Electrical",
+  "trade": "Electrical",
+  "area": "Ennis Rd, Limerick",
+  "phone": "087 777 3415",
+  "order": 4
+ },
+ {
+  "id": "b05",
+  "name": "HEHIR Electrical Services",
+  "trade": "Electrical",
+  "area": "Limerick",
+  "phone": "087 227 0464",
+  "order": 5
+ },
+ {
+  "id": "b06",
+  "name": "Harty & Lawlor Electrical",
+  "trade": "Electrical",
+  "area": "Patrickswell",
+  "phone": "087 265 4389",
+  "order": 6
+ },
+ {
+  "id": "b07",
+  "name": "Electrician Limerick City",
+  "trade": "Electrical",
+  "area": "Limerick city",
+  "phone": "061 572 116",
+  "order": 7
+ },
+ {
+  "id": "b08",
+  "name": "Hartigan Electrical",
+  "trade": "Electrical",
+  "area": "Kildimo",
+  "phone": "087 266 8773",
+  "order": 8
+ },
+ {
+  "id": "b09",
+  "name": "Tony Clancy Electrical Contractors Ltd",
+  "trade": "Electrical",
+  "area": "Davis St, Limerick",
+  "phone": "061 413 253",
+  "order": 9
+ },
+ {
+  "id": "b10",
+  "name": "Dermot Byrne Alarms & Electrical",
+  "trade": "Electrical",
+  "area": "Limerick",
+  "phone": "061 301 930",
+  "order": 10
+ },
+ {
+  "id": "b11",
+  "name": "Eamon Whelan",
+  "trade": "Electrical",
+  "area": "Castleconnell",
+  "phone": "087 232 6279",
+  "order": 11
+ },
+ {
+  "id": "b12",
+  "name": "Mike Ryan",
+  "trade": "Electrical",
+  "area": "Abington",
+  "phone": "061 386 860",
+  "order": 12
+ },
+ {
+  "id": "b13",
+  "name": "SMD Electrical",
+  "trade": "Electrical",
+  "area": "Raheen",
+  "phone": "061 301 554",
+  "order": 13
+ },
+ {
+  "id": "b14",
+  "name": "Mio's Electrical Services",
+  "trade": "Electrical",
+  "area": "Croom",
+  "phone": "087 937 2491",
+  "order": 14
+ },
+ {
+  "id": "b15",
+  "name": "Pat Fitzgerald Electrical Services",
+  "trade": "Electrical",
+  "area": "Kilmallock",
+  "phone": "086 852 3000",
+  "order": 15
+ },
+ {
+  "id": "b16",
+  "name": "H & F Electrical",
+  "trade": "Electrical",
+  "area": "Ballysimon Rd, Limerick",
+  "phone": "061 417 494",
+  "order": 16
+ },
+ {
+  "id": "b17",
+  "name": "Liam Liston",
+  "trade": "Electrical",
+  "area": "Newcastle West",
+  "phone": "069 61548",
+  "order": 17
+ },
+ {
+  "id": "b18",
+  "name": "Pat O'Byrne",
+  "trade": "Electrical",
+  "area": "South Circular Rd, Limerick",
+  "phone": "061 229 775",
+  "order": 18
+ },
+ {
+  "id": "b19",
+  "name": "Peter Huson",
+  "trade": "Electrical",
+  "area": "Castleconnell",
+  "phone": "061 377 205",
+  "order": 19
+ },
+ {
+  "id": "b20",
+  "name": "Kennedy Electrical Contract Services",
+  "trade": "Electrical",
+  "area": "Castlemahon",
+  "phone": "086 258 8426",
+  "order": 20
+ },
+ {
+  "id": "b21",
+  "name": "Kitson Moloney Electrical",
+  "trade": "Electrical",
+  "area": "Monaleen",
+  "phone": "085 141 9783",
+  "order": 21
+ },
+ {
+  "id": "b22",
+  "name": "John McAuliffe Electrical",
+  "trade": "Electrical",
+  "area": "Hospital, Co. Limerick",
+  "phone": "087 614 2202",
+  "order": 22
+ },
+ {
+  "id": "b23",
+  "name": "Eamonn Canty Electrical",
+  "trade": "Electrical",
+  "area": "Hospital, Co. Limerick",
+  "phone": "086 818 8956",
+  "order": 23
+ },
+ {
+  "id": "b24",
+  "name": "Patk Hanley",
+  "trade": "Electrical",
+  "area": "Clarina",
+  "phone": "061 353 144",
+  "order": 24
+ },
+ {
+  "id": "b25",
+  "name": "Indulec Ltd",
+  "trade": "Electrical",
+  "area": "Mulgrave St, Limerick",
+  "phone": "061 415 907",
+  "order": 25
+ },
+ {
+  "id": "b26",
+  "name": "Patrick Carey",
+  "trade": "Electrical",
+  "area": "Castleconnell",
+  "phone": "061 377 013",
+  "order": 26
+ },
+ {
+  "id": "b27",
+  "name": "Eugene Barry",
+  "trade": "Electrical",
+  "area": "Adare",
+  "phone": "061 396 586",
+  "order": 27
+ },
+ {
+  "id": "b28",
+  "name": "Gerard Mullins Electrical Contractors Ltd",
+  "trade": "Electrical",
+  "area": "Clarina",
+  "phone": "061 302 066",
+  "order": 28
+ },
+ {
+  "id": "b29",
+  "name": "Philip Power",
+  "trade": "Electrical",
+  "area": "Caherconlish",
+  "phone": "061 384 372",
+  "order": 29
+ },
+ {
+  "id": "b30",
+  "name": "Dermot O'Connell",
+  "trade": "Electrical",
+  "area": "Adare",
+  "phone": "061 396 959",
+  "order": 30
+ },
+ {
+  "id": "b31",
+  "name": "Gerard Fitzgerald",
+  "trade": "Electrical",
+  "area": "Askeaton",
+  "phone": "061 392 795",
+  "order": 31
+ },
+ {
+  "id": "b32",
+  "name": "M.A. Ryan Electrical Services Ltd",
+  "trade": "Electrical",
+  "area": "O'Connell St, Limerick",
+  "phone": "061 418 943",
+  "order": 32
+ },
+ {
+  "id": "b33",
+  "name": "Darragh Keogh Plumbing & Heating",
+  "trade": "Plumbing & heating",
+  "area": "Knocklong",
+  "phone": "087 226 7819",
+  "order": 33
+ },
+ {
+  "id": "b34",
+  "name": "Pat Byrne Plumbing",
+  "trade": "Plumbing & heating",
+  "area": "Fedamore",
+  "phone": "087 262 1982",
+  "order": 34
+ },
+ {
+  "id": "b35",
+  "name": "Abbey Heat Services",
+  "trade": "Plumbing & heating",
+  "area": "Ardagh",
+  "phone": "087 779 9106",
+  "order": 35
+ },
+ {
+  "id": "b36",
+  "name": "Heating Plumbing Solutions",
+  "trade": "Plumbing & heating",
+  "area": "Raheen",
+  "phone": "061 353 465",
+  "order": 36
+ },
+ {
+  "id": "b37",
+  "name": "Limerick Boiler Doctor",
+  "trade": "Plumbing & heating",
+  "area": "Raheen",
+  "phone": "086 207 7935",
+  "order": 37
+ },
+ {
+  "id": "b38",
+  "name": "Morgan Plumbing & Heating",
+  "trade": "Plumbing & heating",
+  "area": "Murroe",
+  "phone": "087 447 5117",
+  "order": 38
+ },
+ {
+  "id": "b39",
+  "name": "SL Plumbing & Heating",
+  "trade": "Plumbing & heating",
+  "area": "Dooradoyle",
+  "phone": "085 727 0138",
+  "order": 39
+ },
+ {
+  "id": "b40",
+  "name": "Con Horgan Plumbing",
+  "trade": "Plumbing & heating",
+  "area": "Newcastle West",
+  "phone": "069 62795",
+  "order": 40
+ },
+ {
+  "id": "b41",
+  "name": "Blue Gas",
+  "trade": "Plumbing & heating",
+  "area": "Ballysimon",
+  "phone": "061 330 016",
+  "order": 41
+ },
+ {
+  "id": "b42",
+  "name": "Murphy Plumbing Services",
+  "trade": "Plumbing & heating",
+  "area": "Newcastle West",
+  "phone": "087 926 7795",
+  "order": 42
+ },
+ {
+  "id": "b43",
+  "name": "Thomas Hughes",
+  "trade": "Plumbing & heating",
+  "area": "Dooradoyle",
+  "phone": "061 301 507",
+  "order": 43
+ },
+ {
+  "id": "b44",
+  "name": "Poseidon Plumbing",
+  "trade": "Plumbing & heating",
+  "area": "Galbally",
+  "phone": "085 815 4388",
+  "order": 44
+ },
+ {
+  "id": "b45",
+  "name": "Grahame Gibbons",
+  "trade": "Plumbing & heating",
+  "area": "Athea",
+  "phone": "087 288 1234",
+  "order": 45
+ },
+ {
+  "id": "b46",
+  "name": "Terence O'Shea Heating & Plumbing",
+  "trade": "Plumbing & heating",
+  "area": "Patrickswell",
+  "phone": "086 836 3634",
+  "order": 46
+ },
+ {
+  "id": "b47",
+  "name": "David Hayes Heating and Plumbing",
+  "trade": "Plumbing & heating",
+  "area": "Shanagolden",
+  "phone": "087 281 4741",
+  "order": 47
+ },
+ {
+  "id": "b48",
+  "name": "Mike Higgins",
+  "trade": "Plumbing & heating",
+  "area": "Limerick",
+  "phone": "087 252 6626",
+  "order": 48
+ },
+ {
+  "id": "b49",
+  "name": "Dyno-Rod Limerick",
+  "trade": "Drains",
+  "area": "Tanyard Lane, Limerick",
+  "phone": "061 314 878",
+  "order": 49
+ }
+]
